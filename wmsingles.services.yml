@@ -1,0 +1,35 @@
+services:
+  wmsingles:
+    class: Drupal\wmsingles\Service\WmSingles
+    arguments: ['@entity_type.manager', '@language_manager']
+
+  # Event subscribers.
+  wmsingles.nodetypeform_subscriber:
+    class: Drupal\wmsingles\EventSubscriber\NodeTypeFormEventSubscriber
+    tags:
+      - { name: event_subscriber }
+  wmsingles.nodetypeupdate_subscriber:
+    class: Drupal\wmsingles\EventSubscriber\NodeTypeUpdateEventSubscriber
+    arguments: ['@wmsingles']
+    tags:
+      - { name: event_subscriber }
+
+  # Routing
+  wmsingles.routing.contest:
+    class: Drupal\wmsingles\Routing\NodeRouterSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  # Access
+  wmsingles.access.node.delete:
+    class: Drupal\wmsingles\Access\NodeDeleteAccess
+    arguments: ['@wmsingles']
+    tags:
+      - { name: access_check, applies_to: _wmsingles_node_delete_access_check }
+  wmsingles.access.node.add:
+    class: Drupal\wmsingles\Access\NodeAddAccess
+    arguments: ['@wmsingles', '@current_route_match']
+    tags:
+      - { name: access_check, applies_to: _wmsingles_node_add_access_check }
+
+
