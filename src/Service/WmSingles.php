@@ -4,9 +4,11 @@ namespace Drupal\wmSingles\Service;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
+use Drupal\node\Entity\NodeType;
+use Drupal\Core\State\StateInterface;
+use Drupal\workflows\State;
 
 /**
  * Provides common functionality for content translation.
@@ -22,23 +24,24 @@ class WmSingles
     protected $entityTypeManager;
 
     /**
-     * The language manager.
+     * The state.
+     *
+     * @var \Drupal\Core\State\StateInterface
      */
-    protected $languageManager;
+    protected $state;
 
     /**
      * Constructs a WmContentManageAccessCheck object.
      *
      * @param EntityTypeManagerInterface $entityTypeManager
-     * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
-     *   The language manager.
+     * @param StateInterface $state
      */
     public function __construct(
         EntityTypeManagerInterface $entityTypeManager,
-        LanguageManagerInterface $language_manager
+        StateInterface $state
     ) {
         $this->entityTypeManager = $entityTypeManager;
-        $this->languageManager = $language_manager;
+        $this->state = $state;
     }
 
     /**
@@ -93,7 +96,7 @@ class WmSingles
      */
     public function setSnowFlake(NodeTypeInterface $type, NodeInterface $node)
     {
-        $type->setThirdPartySetting('wmsingles', 'snowflake', $node->id());
+        $this->state->set($this->getSnowFlakeKey($type), (int) $node->id());
     }
 
     /**
@@ -103,6 +106,11 @@ class WmSingles
      */
     public function getSnowFlake(NodeTypeInterface $type)
     {
-        return $type->getThirdPartySetting('wmsingles', 'snowflake', 0);
+        return $this->state->get($this->getSnowFlakeKey($type). 0);
+    }
+
+    private function getSnowFlakeKey(NodeTypeInterface $type)
+    {
+        return 'wmsingles.' . $type->id();
     }
 }
