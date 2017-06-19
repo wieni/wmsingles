@@ -8,7 +8,6 @@ use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\node\Entity\NodeType;
 use Drupal\Core\State\StateInterface;
-use Drupal\workflows\State;
 
 /**
  * Provides common functionality for content translation.
@@ -78,6 +77,20 @@ class WmSingles
     }
 
     /**
+     * Returns a loaded single node.
+     *
+     * @param NodeTypeInterface $type
+     * @return bool|\Drupal\Core\Entity\EntityInterface|null
+     */
+    public function getSingle(NodeTypeInterface $type)
+    {
+        if ($id = $this->getSnowFlake($type)) {
+            return $this->entityTypeManager->getStorage('node')->load($id);
+        }
+        return false;
+    }
+
+    /**
      * Check whether a bundle is single or not.
      *
      * @param NodeTypeInterface $type
@@ -86,6 +99,24 @@ class WmSingles
     public function isSingle(NodeTypeInterface $type)
     {
         return $type->getThirdPartySetting('wmsingles', 'isSingle', false);
+    }
+
+    /**
+     * Get all single content types AND their snowflakes.
+     * @return array|mixed
+     */
+    public function getAllSingles()
+    {
+        $list = &drupal_static(__FUNCTION__);
+        if (!isset($list)) {
+            /** @var NodeTypeInterface $type */
+            foreach (NodeType::loadMultiple() as $type) {
+                if ($this->isSingle($type)) {
+                    $list[] = $type;
+                }
+            }
+        }
+        return $list;
     }
 
     /**
@@ -106,7 +137,7 @@ class WmSingles
      */
     public function getSnowFlake(NodeTypeInterface $type)
     {
-        return $this->state->get($this->getSnowFlakeKey($type). 0);
+        return $this->state->get($this->getSnowFlakeKey($type), 0);
     }
 
     private function getSnowFlakeKey(NodeTypeInterface $type)
