@@ -67,6 +67,7 @@ class WmSingles
                     ->create([
                         'type' => $type->id(),
                         'title' => $type->label(),
+                        'path' =>  ['alias' => '/' . $type->id()]
                     ]);
                 $entity->save();
                 $this->setSnowFlake($type, $entity);
