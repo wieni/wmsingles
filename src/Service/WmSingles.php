@@ -92,6 +92,16 @@ class WmSingles
     }
 
     /**
+     * @param $bundle
+     * @return bool|\Drupal\Core\Entity\EntityInterface|null
+     */
+    public function getSingleByBundle($bundle)
+    {
+        $types = $this->getAllSingles();
+        return isset($types[$bundle]) ? $this->getSingle($types[$bundle]) : null;
+    }
+
+    /**
      * Check whether a bundle is single or not.
      *
      * @param NodeTypeInterface $type
@@ -103,7 +113,7 @@ class WmSingles
     }
 
     /**
-     * Get all single content types AND their snowflakes.
+     * Get all single content types.
      * @return array|mixed
      */
     public function getAllSingles()
@@ -113,7 +123,7 @@ class WmSingles
             /** @var NodeTypeInterface $type */
             foreach (NodeType::loadMultiple() as $type) {
                 if ($this->isSingle($type)) {
-                    $list[] = $type;
+                    $list[$type->get('type')] = $type;
                 }
             }
         }
