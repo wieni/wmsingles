@@ -43,7 +43,7 @@ class NodeAddAccess implements AccessInterface
         /** @var NodeTypeInterface $type */
         $type = $this->currentRoute->getParameter('node_type');
 
-        if ($this->wmSingles->isSingle($type)) {
+        if ($type && $this->wmSingles->isSingle($type)) {
             return AccessResult::forbidden();
         }
 
