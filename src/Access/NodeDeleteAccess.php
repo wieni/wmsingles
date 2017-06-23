@@ -8,6 +8,7 @@ use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\wmSingles\Service\WmSingles;
 use Drupal\node\Entity\NodeType;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Class NodeDeleteAccess
@@ -32,8 +33,12 @@ class NodeDeleteAccess implements AccessInterface
      * @param NodeInterface $node
      * @return \Drupal\Core\Access\AccessResultForbidden|\Drupal\Core\Access\AccessResultNeutral
      */
-    public function access(NodeInterface $node)
+    public function access(NodeInterface $node, AccountInterface $account)
     {
+        if ($account->hasPermission('administer wmsingles')) {
+            return AccessResult::allowed();
+        }
+
         /** @var NodeTypeInterface $type */
         $type = NodeType::load($node->bundle());
 
