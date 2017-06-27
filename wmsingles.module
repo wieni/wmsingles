@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * @file
+ * Defines the WmSingles module.
+ *
+ * @category module
+ */
+
+/**
+ * Implements hook_entity_operation_alter().
+ * 
+ * @param array $operations
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ */
+function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity)
+{
+    if ($entity->getEntityTypeId() == 'node') {
+        if (\Drupal::service('wmsingles')->getSingleByBundle($entity->bundle()) &&
+            !\Drupal::currentUser()->hasPermission('administer wmsingles')
+        ) {
+            if (!empty($operations['delete'])) {
+                unset($operations['delete']);
+            }
+        }
+    }
+}

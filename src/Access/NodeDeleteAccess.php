@@ -46,6 +46,6 @@ class NodeDeleteAccess implements AccessInterface
             return AccessResult::forbidden();
         }
 
-        return AccessResult::allowed();
+        return AccessResult::neutral();
     }
 }
