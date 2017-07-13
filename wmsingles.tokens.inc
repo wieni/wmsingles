@@ -49,26 +49,21 @@ function wmsingles_tokens($type, $tokens, array $data = [], array $options = [])
 
     if ($type == 'wmsingles') {
         foreach ($tokens as $name => $original) {
-            switch ($name) {
-                case 'ledennetwerk:url':
-                    $typeString = explode(':', $name);
-                    /** @var EntityTypeInterface $type */
-                    $type = NodeType::load($typeString[0]);
+            $split = explode(':', $name);
 
-                    $replacements[$original] = '';
+            // Load the content type
+            $node = \Drupal::service('wmsingles')->getSingleByBundle($split[0]);
+            if ($node) {
+                // Failsafe
+                $replace = '';
 
-                    if ($type instanceof NodeType) {
-                        /** @var \Drupal\node\NodeInterface $node */
-                        if ($node = \Drupal::service('wmsingles')->getSingle($type)) {
-                            $canonical = '/node/' . $node->id();
-                            $alias = \Drupal::service('path.alias_manager')->getAliasByPath($canonical);
+                $canonical = '/node/' . $node->id();
+                $alias = \Drupal::service('path.alias_manager')->getAliasByPath($canonical);
+                if ($alias !== $canonical) {
+                    $replace = $alias;
+                }
 
-                            if ($alias !== $canonical) {
-                                $replacements[$original] = $alias;
-                            }
-                        }
-                    }
-                    break;
+                $replacements[$original] = $replace;
             }
         }
     }
