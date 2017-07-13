@@ -57,10 +57,12 @@ function wmsingles_tokens($type, $tokens, array $data = [], array $options = [])
                 // Failsafe
                 $replace = '';
 
-                $canonical = '/node/' . $node->id();
-                $alias = \Drupal::service('path.alias_manager')->getAliasByPath($canonical);
-                if ($alias !== $canonical) {
-                    $replace = $alias;
+                if ($split[1] == 'url') {
+                    $canonical = '/node/' . $node->id();
+                    $alias = \Drupal::service('path.alias_manager')->getAliasByPath($canonical);
+                    if ($alias !== $canonical) {
+                        $replace = $alias;
+                    }
                 }
 
                 $replacements[$original] = $replace;
