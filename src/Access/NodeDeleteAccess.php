@@ -31,7 +31,8 @@ class NodeDeleteAccess implements AccessInterface
 
     /**
      * @param NodeInterface $node
-     * @return \Drupal\Core\Access\AccessResultForbidden|\Drupal\Core\Access\AccessResultNeutral
+     * @param AccountInterface $account
+     * @return \Drupal\Core\Access\AccessResultAllowed|\Drupal\Core\Access\AccessResultForbidden|\Drupal\Core\Access\AccessResultNeutral
      */
     public function access(NodeInterface $node, AccountInterface $account)
     {
@@ -46,6 +47,6 @@ class NodeDeleteAccess implements AccessInterface
             return AccessResult::forbidden();
         }
 
-        return AccessResult::neutral();
+        return AccessResult::allowed();
     }
 }
