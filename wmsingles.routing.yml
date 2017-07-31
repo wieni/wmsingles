@@ -1,0 +1,7 @@
+wmsingles.overview:
+  path: '/admin/content/singles'
+  defaults:
+    _controller: '\Drupal\wmsingles\Controller\OverviewController::overview'
+    _title:  'Singles'
+  requirements:
+    _permission: 'access content overview'

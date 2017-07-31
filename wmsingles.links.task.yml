@@ -1,0 +1,5 @@
+wmsingles.overview:
+  route_name : wmsingles.overview
+  title: Singles
+  base_route: system.admin_content
+  weight: 10
