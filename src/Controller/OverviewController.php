@@ -4,7 +4,7 @@ namespace Drupal\wmsingles\Controller;
 
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
-use Drupal\wmcontroller\Controller\ControllerBase;
+use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\wmSingles\Service\WmSingles;
 
