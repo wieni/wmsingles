@@ -120,6 +120,7 @@ class WmSingles
     {
         $list = &drupal_static(__FUNCTION__);
         if (!isset($list)) {
+            $list = [];
             /** @var NodeTypeInterface $type */
             foreach (NodeType::loadMultiple() as $type) {
                 if ($this->isSingle($type)) {
