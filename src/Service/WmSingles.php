@@ -4,14 +4,12 @@ namespace Drupal\wmSingles\Service;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\node\Entity\NodeType;
 use Drupal\Core\State\StateInterface;
 
-/**
- * Provides common functionality for content translation.
- */
 class WmSingles
 {
 
@@ -30,17 +28,27 @@ class WmSingles
     protected $state;
 
     /**
+     * The language manager.
+     *
+     * @var \Drupal\Core\Language\LanguageManagerInterface
+     */
+    protected $languageManager;
+
+    /**
      * Constructs a WmContentManageAccessCheck object.
      *
      * @param EntityTypeManagerInterface $entityTypeManager
      * @param StateInterface $state
+     * @param LanguageManagerInterface $languageManager
      */
     public function __construct(
         EntityTypeManagerInterface $entityTypeManager,
-        StateInterface $state
+        StateInterface $state,
+        LanguageManagerInterface $languageManager
     ) {
         $this->entityTypeManager = $entityTypeManager;
         $this->state = $state;
+        $this->languageManager = $languageManager;
     }
 
     /**
@@ -86,9 +94,9 @@ class WmSingles
     public function getSingle(NodeTypeInterface $type)
     {
         if ($id = $this->getSnowFlake($type)) {
-            return $this->entityTypeManager->getStorage('node')->load($id);
+            return $this->loadNode($id);
         }
-        return false;
+        return null;
     }
 
     /**
@@ -155,5 +163,18 @@ class WmSingles
     private function getSnowFlakeKey(NodeTypeInterface $type)
     {
         return 'wmsingles.' . $type->id();
+    }
+
+    private function loadNode($id)
+    {
+        $langcode = $this->languageManager->getCurrentLanguage()->getId();
+        /** @var NodeInterface $single */
+        $single = $this->entityTypeManager->getStorage('node')->load($id);
+
+        if (!$single || !$single->hasTranslation($langcode)) {
+            return null;
+        }
+
+        return $single->getTranslation($langcode);
     }
 }
