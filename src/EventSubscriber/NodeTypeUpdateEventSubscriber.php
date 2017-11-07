@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\wmSingles\EventSubscriber;
+namespace Drupal\wmsingles\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\node\NodeTypeInterface;

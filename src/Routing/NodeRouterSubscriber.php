@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\wmSingles\Routing;
+namespace Drupal\wmsingles\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Symfony\Component\Routing\RouteCollection;

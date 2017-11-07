@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\wmSingles\EventSubscriber;
+namespace Drupal\wmsingles\EventSubscriber;
 
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

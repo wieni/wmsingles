@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\wmSingles\Service;
+namespace Drupal\wmsingles\Service;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\wmSingles\Access;
+namespace Drupal\wmsingles\Access;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Routing\Access\AccessInterface;
