@@ -18,7 +18,7 @@ class NodeTypeFormEventSubscriber implements EventSubscriberInterface
      */
     public function alterNodeTypeForm(FormBaseAlterEvent $event)
     {
-        $form = $event->getForm();
+        $form = &$event->getForm();
 
         /** @var FormStateInterface $form_state */
         $formState = $event->getFormState();
@@ -38,8 +38,6 @@ class NodeTypeFormEventSubscriber implements EventSubscriberInterface
         ];
 
         $form['#entity_builders'][] = [$this, 'wmSinglesFormNodeTypeFormBuilder'];
-
-        $event->setForm($form);
     }
 
     /**
