@@ -7,21 +7,33 @@
  * @category module
  */
 
+use Drupal\Core\Url;
+
 /**
  * Implements hook_entity_operation_alter().
- * 
+ *
  * @param array $operations
  * @param \Drupal\Core\Entity\EntityInterface $entity
  */
 function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity)
 {
-    if ($entity->getEntityTypeId() == 'node') {
-        if (\Drupal::service('wmsingles')->getSingleByBundle($entity->bundle()) &&
-            !\Drupal::currentUser()->hasPermission('administer wmsingles')
-        ) {
-            if (!empty($operations['delete'])) {
-                unset($operations['delete']);
-            }
-        }
+    if (
+        $entity->getEntityTypeId() !== 'node'
+        || !\Drupal::service('wmsingles')->getSingleByBundle($entity->bundle())
+    ) {
+        return;
     }
+
+    if (
+        !\Drupal::currentUser()->hasPermission('administer wmsingles')
+        && !empty($operations['delete'])
+    ) {
+        unset($operations['delete']);
+    }
+
+    $operations['view'] = [
+        'title' => 'View',
+        'weight' => 20,
+        'url' => Url::fromRoute('entity.node.canonical', ['node' => $entity->id()]),
+    ];
 }
