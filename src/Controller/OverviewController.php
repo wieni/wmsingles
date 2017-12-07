@@ -2,6 +2,7 @@
 
 namespace Drupal\wmsingles\Controller;
 
+use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Controller\ControllerBase;
@@ -65,7 +66,11 @@ class OverviewController extends ControllerBase
                 $operations = $this->entityTypeManager()->getListBuilder('node')->getOperations($node);
 
                 $output['table'][$item->id()]['title'] = [
-                    '#markup' => $node->label(),
+                    '#markup' => sprintf(
+                        '<a href="%s">%s</a>',
+                        Url::fromRoute('entity.node.canonical', ['node' => $node->id()])->toString(),
+                        $node->label()
+                    )
                 ];
 
                 $output['table'][$item->id()]['type'] = [
