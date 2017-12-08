@@ -4,6 +4,11 @@ services:
     arguments: ['@entity_type.manager', '@state', '@language_manager']
 
   # Event subscribers.
+  wmsingles.nodeform_subscriber:
+    class: Drupal\wmsingles\EventSubscriber\NodeFormEventSubscriber
+    tags:
+      - { name: event_subscriber }
+    arguments: ['@current_route_match']
   wmsingles.nodetypeform_subscriber:
     class: Drupal\wmsingles\EventSubscriber\NodeTypeFormEventSubscriber
     tags:
@@ -31,5 +36,3 @@ services:
     arguments: ['@wmsingles', '@current_route_match']
     tags:
       - { name: access_check, applies_to: _wmsingles_node_add_access_check }
-
-
