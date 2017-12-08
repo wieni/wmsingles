@@ -40,6 +40,7 @@ class NodeFormEventSubscriber implements EventSubscriberInterface
 
         if (isset($form['meta']['author'])) {
             $form['meta']['author']['#access'] = false;
+            $form['meta']['published']['#access'] = false;
         }
     }
 
