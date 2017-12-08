@@ -7,6 +7,8 @@
  * @category module
  */
 
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 
 /**
@@ -17,15 +19,20 @@ use Drupal\Core\Url;
  */
 function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity)
 {
+    /** @var AccountInterface $user */
+    $user = \Drupal::currentUser();
+    /** @var EntityInterface|null $single */
+    $single = \Drupal::service('wmsingles')->getSingleByBundle($entity->bundle());
+
     if (
         $entity->getEntityTypeId() !== 'node'
-        || !\Drupal::service('wmsingles')->getSingleByBundle($entity->bundle())
+        || !$single
     ) {
         return;
     }
 
     if (
-        !\Drupal::currentUser()->hasPermission('administer wmsingles')
+        !$user->hasPermission('administer wmsingles')
         && !empty($operations['delete'])
     ) {
         unset($operations['delete']);
@@ -36,4 +43,12 @@ function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entit
         'weight' => 20,
         'url' => Url::fromRoute('entity.node.canonical', ['node' => $entity->id()]),
     ];
+
+    if ($user->hasPermission('administer content types')) {
+        $operations['edit_type'] = [
+            'title' => 'Edit type',
+            'weight' => 19,
+            'url' => Url::fromRoute('entity.node_type.edit_form', ['node_type' => $single->bundle()]),
+        ];
+    }
 }

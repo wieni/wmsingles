@@ -50,8 +50,8 @@ class OverviewController extends ControllerBase
         $output['table'] = [
             '#type' => 'table',
             '#header' => [
-                $this->t('Title'),
-                $this->t('Type'),
+                $this->t('Name'),
+                $this->t('Description'),
                 $this->t('Operations'),
             ],
             '#empty' => $this->t('No singles found.'),
@@ -73,8 +73,8 @@ class OverviewController extends ControllerBase
                     )
                 ];
 
-                $output['table'][$item->id()]['type'] = [
-                    '#markup' => $item->label(),
+                $output['table'][$item->id()]['description'] = [
+                    '#markup' => $item->getDescription(),
                 ];
 
                 $output['table'][$item->id()]['operations'] = [
