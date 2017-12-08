@@ -1,0 +1,6 @@
+wmsingles.content:
+    title: 'Singles'
+    description: ''
+    route_name: wmsingles.overview
+    parent: system.admin_content
+    weight: -1
