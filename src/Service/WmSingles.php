@@ -2,6 +2,7 @@
 
 namespace Drupal\wmsingles\Service;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
@@ -35,20 +36,30 @@ class WmSingles
     protected $languageManager;
 
     /**
+     * The config.
+     *
+     * @var \Drupal\Core\Config\Config
+     */
+    private $config;
+
+    /**
      * Constructs a WmContentManageAccessCheck object.
      *
      * @param EntityTypeManagerInterface $entityTypeManager
      * @param StateInterface $state
      * @param LanguageManagerInterface $languageManager
+     * @param ConfigFactoryInterface $configFactory
      */
     public function __construct(
         EntityTypeManagerInterface $entityTypeManager,
         StateInterface $state,
-        LanguageManagerInterface $languageManager
+        LanguageManagerInterface $languageManager,
+        ConfigFactoryInterface $configFactory
     ) {
         $this->entityTypeManager = $entityTypeManager;
         $this->state = $state;
         $this->languageManager = $languageManager;
+        $this->config = $configFactory->get('wmsingles');
     }
 
     /**
@@ -171,8 +182,10 @@ class WmSingles
         /** @var NodeInterface $single */
         $single = $this->entityTypeManager->getStorage('node')->load($id);
 
+        $strictTranslation = $this->config->get('strict_translation');
+
         if (!$single || !$single->hasTranslation($langcode)) {
-            return null;
+            return $strictTranslation ? null : $single;
         }
 
         return $single->getTranslation($langcode);

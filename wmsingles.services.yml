@@ -1,7 +1,11 @@
 services:
   wmsingles:
     class: Drupal\wmsingles\Service\WmSingles
-    arguments: ['@entity_type.manager', '@state', '@language_manager']
+    arguments:
+      - '@entity_type.manager'
+      - '@state'
+      - '@language_manager'
+      - '@config.factory'
 
   # Event subscribers.
   wmsingles.nodeform_subscriber:
