@@ -79,16 +79,7 @@ class WmSingles
                 ->execute();
 
             if ($snowFlakeCount == 0) {
-                /** @var NodeInterface $entity */
-                $entity = $this
-                    ->entityTypeManager
-                    ->getStorage('node')
-                    ->create([
-                        'type' => $type->id(),
-                        'title' => $type->label(),
-                        'path' =>  ['alias' => '/' . $type->id()]
-                    ]);
-                $entity->save();
+                $entity = $this->createNode($type);
                 $this->setSnowFlake($type, $entity);
             } elseif ($snowFlakeCount > 1) {
                 throw new \Exception('Single Bundle with more then one entity.');
@@ -174,6 +165,27 @@ class WmSingles
     private function getSnowFlakeKey(NodeTypeInterface $type)
     {
         return 'wmsingles.' . $type->id();
+    }
+
+    /**
+     * Create a node to be used for a single content type
+     * @param NodeTypeInterface $type
+     * @return NodeInterface
+     */
+    protected function createNode(NodeTypeInterface $type)
+    {
+        /** @var NodeInterface $entity */
+        $entity = $this
+            ->entityTypeManager
+            ->getStorage('node')
+            ->create([
+                'type' => $type->id(),
+                'title' => $type->label(),
+                'path' =>  ['alias' => '/' . $type->id()]
+            ]);
+        $entity->save();
+
+        return $entity;
     }
 
     private function loadNode($id)
