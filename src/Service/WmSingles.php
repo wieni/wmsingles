@@ -101,7 +101,7 @@ class WmSingles
             return null;
         }
 
-        $node = $this->loadNode($id);
+        $node = $this->entityTypeManager->getStorage('node')->load($id);
 
         if (empty($node)) {
             $this->deleteSnowFlake($type);
