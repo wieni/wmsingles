@@ -95,10 +95,22 @@ class WmSingles
      */
     public function getSingle(NodeTypeInterface $type)
     {
-        if ($id = $this->getSnowFlake($type)) {
-            return $this->loadNode($id);
+        $id = $this->getSnowFlake($type);
+
+        if (is_null($id)) {
+            return null;
         }
-        return null;
+
+        $node = $this->entityTypeManager->getStorage('node')->load($id);
+
+        if (empty($node)) {
+            $this->deleteSnowFlake($type);
+            $this->checkSingle($type);
+
+            return $this->getSingle($type);
+        }
+
+        return $node;
     }
 
     /**
@@ -150,6 +162,16 @@ class WmSingles
     public function setSnowFlake(NodeTypeInterface $type, NodeInterface $node)
     {
         $this->state->set($this->getSnowFlakeKey($type), (int) $node->id());
+    }
+
+    /**
+     * Delete the snowflake entity id for a single bundle.
+     *
+     * @param NodeTypeInterface $type
+     */
+    public function deleteSnowFlake(NodeTypeInterface $type)
+    {
+        $this->state->delete($this->getSnowFlakeKey($type));
     }
 
     /**
