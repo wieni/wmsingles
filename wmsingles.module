@@ -44,7 +44,15 @@ function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entit
     }
 
     $nodeType = NodeType::load($entity->bundle());
-    $operations += \Drupal::entityTypeManager()
+    $nodeTypeOperations = \Drupal::entityTypeManager()
         ->getListBuilder('node_type')
         ->getOperations($nodeType);
+
+    if (isset($nodeTypeOperations['edit'])) {
+        $nodeTypeOperations['edit']['title'] = t('Edit type');
+        $nodeTypeOperations['edit-type'] = $nodeTypeOperations['edit'];
+        unset($nodeTypeOperations['edit']);
+    }
+
+    $operations += $nodeTypeOperations;
 }
