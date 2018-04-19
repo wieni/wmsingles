@@ -10,6 +10,7 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
+use Drupal\node\Entity\NodeType;
 
 /**
  * Implements hook_entity_operation_alter().
@@ -24,31 +25,26 @@ function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entit
     /** @var EntityInterface|null $single */
     $single = \Drupal::service('wmsingles')->getSingleByBundle($entity->bundle());
 
-    if (
-        $entity->getEntityTypeId() !== 'node'
-        || !$single
-    ) {
+    if ($entity->getEntityTypeId() !== 'node' || !$single) {
         return;
     }
 
-    if (
-        !$user->hasPermission('administer wmsingles')
-        && !empty($operations['delete'])
-    ) {
-        unset($operations['delete']);
-    }
-
     $operations['view'] = [
-        'title' => 'View',
-        'weight' => 20,
+        'title' => t('View'),
+        'weight' => 5,
         'url' => Url::fromRoute('entity.node.canonical', ['node' => $entity->id()]),
     ];
 
-    if ($user->hasPermission('administer content types')) {
-        $operations['edit_type'] = [
-            'title' => 'Edit type',
-            'weight' => 19,
-            'url' => Url::fromRoute('entity.node_type.edit_form', ['node_type' => $single->bundle()]),
-        ];
+    $operations['edit']['weight'] = 10;
+
+    if (!$user->hasPermission('administer wmsingles') && !empty($operations['delete'])) {
+        unset($operations['delete']);
+    } else {
+        $operations['delete']['weight'] = 15;
     }
+
+    $nodeType = NodeType::load($entity->bundle());
+    $operations += \Drupal::entityTypeManager()
+        ->getListBuilder('node_type')
+        ->getOperations($nodeType);
 }
