@@ -3,6 +3,7 @@
 namespace Drupal\wmsingles\Controller;
 
 use Drupal\Core\Url;
+use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Controller\ControllerBase;
@@ -51,6 +52,7 @@ class OverviewController extends ControllerBase
             '#type' => 'table',
             '#header' => [
                 $this->t('Name'),
+                $this->t('Type'),
                 $this->t('Description'),
                 $this->t('Operations'),
             ],
@@ -60,9 +62,10 @@ class OverviewController extends ControllerBase
 
         /** @var NodeTypeInterface $item */
         foreach ($this->wmSingles->getAllSingles() as $item) {
-            /** @var NodeInterface $node */
             $node = $this->wmSingles->getSingleByBundle($item->id());
+
             if ($node) {
+                $nodeType = NodeType::load($node->bundle());
                 $operations = $this->entityTypeManager()->getListBuilder('node')->getOperations($node);
 
                 $output['table'][$item->id()]['title'] = [
@@ -73,8 +76,12 @@ class OverviewController extends ControllerBase
                     )
                 ];
 
+                $output['table'][$item->id()]['bundle'] = [
+                    '#plain_text' => $nodeType->label(),
+                ];
+
                 $output['table'][$item->id()]['description'] = [
-                    '#markup' => $item->getDescription(),
+                    '#plain_text' => $item->getDescription(),
                 ];
 
                 $output['table'][$item->id()]['operations'] = [
