@@ -1,4 +1,6 @@
 administer wmsingles:
-  title: 'administer wmsingles'
-  description: 'Allows, among others, to delete single nodes'
-  restrict access: true
+    title: 'Administer wmsingles'
+    description: 'Allows, among others, to delete single nodes'
+
+access wmsingles overview:
+    title: 'Access the wmsingles overview page'

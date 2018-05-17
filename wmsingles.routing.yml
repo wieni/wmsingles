@@ -4,4 +4,4 @@ wmsingles.overview:
     _controller: '\Drupal\wmsingles\Controller\OverviewController::overview'
     _title:  'Singles'
   requirements:
-    _permission: 'access content overview'
+    _permission: 'access wmsingles overview'
