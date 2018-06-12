@@ -39,7 +39,7 @@ function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entit
 
     if (!$user->hasPermission('administer wmsingles') && !empty($operations['delete'])) {
         unset($operations['delete']);
-    } else {
+    } else if (!empty($operations['delete'])) {
         $operations['delete']['weight'] = 15;
     }
 
