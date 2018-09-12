@@ -2,9 +2,9 @@
 
 namespace Drupal\wmsingles\Service;
 
+use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
@@ -13,43 +13,15 @@ use Drupal\Core\State\StateInterface;
 
 class WmSingles
 {
-
-    /**
-     * The entity type manager.
-     *
-     * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-     */
+    /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
-
-    /**
-     * The state.
-     *
-     * @var \Drupal\Core\State\StateInterface
-     */
+    /** @var StateInterface */
     protected $state;
-
-    /**
-     * The language manager.
-     *
-     * @var \Drupal\Core\Language\LanguageManagerInterface
-     */
+    /** @var LanguageManagerInterface */
     protected $languageManager;
-
-    /**
-     * The config.
-     *
-     * @var \Drupal\Core\Config\Config
-     */
+    /** @var Config */
     private $config;
 
-    /**
-     * Constructs a WmContentManageAccessCheck object.
-     *
-     * @param EntityTypeManagerInterface $entityTypeManager
-     * @param StateInterface $state
-     * @param LanguageManagerInterface $languageManager
-     * @param ConfigFactoryInterface $configFactory
-     */
     public function __construct(
         EntityTypeManagerInterface $entityTypeManager,
         StateInterface $state,
@@ -59,31 +31,53 @@ class WmSingles
         $this->entityTypeManager = $entityTypeManager;
         $this->state = $state;
         $this->languageManager = $languageManager;
-        $this->config = $configFactory->get('wmsingles');
+        $this->config = $configFactory->get('wmsingles.settings');
     }
 
     /**
      * This functions checks that for each key there is a corresponding
      * entity in the given bundle, and creates one if it's not there.
+     *
      * @param NodeTypeInterface $type
      * @throws \Exception
      */
     public function checkSingle(NodeTypeInterface $type)
     {
-        if ($this->isSingle($type)) {
-            /** @var QueryInterface $query */
-            $query = $this->entityTypeManager->getStorage('node')->getQuery();
-            $snowFlakeCount = $query
-                ->condition('type', $type->id())
-                ->count()
-                ->execute();
+        if (!$this->isSingle($type)) {
+            return;
+        }
 
-            if ($snowFlakeCount == 0) {
-                $entity = $this->createNode($type);
-                $this->setSnowFlake($type, $entity);
-            } elseif ($snowFlakeCount > 1) {
-                throw new \Exception('Single Bundle with more then one entity.');
-            }
+        $entity = null;
+        $storage = $this->entityTypeManager->getStorage('node');
+        $nodes = $storage->getQuery()
+            ->condition('type', $type->id())
+            ->execute();
+
+        // There are multiple nodes, this shouldn't happen
+        if (count($nodes) > 1) {
+            throw new \Exception('Single Bundle with more then one entity.');
+        }
+
+        // There aren't any nodes yet, so create one
+        if (empty($nodes)) {
+            $entity = $this->createNode($type);
+        }
+
+        $snowFlake = $this->getSnowFlake($type);
+        $node = reset($nodes);
+
+        // There's 1 node, but no snowflake (or a snowflake that doesn't match the nid)
+        if ($node !== $snowFlake) {
+            $entity = $storage->load($node);
+        }
+
+        // There's 1 node, but its id is not yet stored as snowflake
+        if (!$this->getSnowFlake($type)) {
+            $entity = $storage->load(reset($nodes));
+        }
+
+        if ($entity instanceof NodeInterface) {
+            $this->setSnowFlake($type, $entity);
         }
     }
 
@@ -91,31 +85,29 @@ class WmSingles
      * Returns a loaded single node.
      *
      * @param NodeTypeInterface $type
-     * @return bool|\Drupal\Core\Entity\EntityInterface|null
+     * @return NodeInterface|null
+     * @throws \Exception
      */
     public function getSingle(NodeTypeInterface $type)
     {
-        $id = $this->getSnowFlake($type);
+        $tries = 0;
 
-        if (!$id) {
-            return null;
-        }
+        do {
+            $tries++;
+            $id = $this->getSnowFlake($type);
+            $node = $this->loadNode($id);
 
-        $node = $this->loadNode($id);
-
-        if (empty($node)) {
-            $this->deleteSnowFlake($type);
-            $this->checkSingle($type);
-
-            return $this->getSingle($type);
-        }
+            if (!$node instanceof NodeInterface) {
+                $this->checkSingle($type);
+            }
+        } while ($tries < 2);
 
         return $node;
     }
 
     /**
      * @param $bundle
-     * @return bool|\Drupal\Core\Entity\EntityInterface|null
+     * @return NodeInterface|null
      */
     public function getSingleByBundle($bundle)
     {
@@ -216,10 +208,8 @@ class WmSingles
         /** @var NodeInterface $single */
         $single = $this->entityTypeManager->getStorage('node')->load($id);
 
-        $strictTranslation = $this->config->get('strict_translation');
-
         if (!$single || !$single->hasTranslation($langcode)) {
-            return $strictTranslation ? null : $single;
+            return $this->config->get('strict_translation') ? null : $single;
         }
 
         return $single->getTranslation($langcode);
