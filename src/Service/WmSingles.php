@@ -5,6 +5,7 @@ namespace Drupal\wmsingles\Service;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
@@ -204,14 +205,18 @@ class WmSingles
 
     private function loadNode($id)
     {
-        $langcode = $this->languageManager->getCurrentLanguage()->getId();
+        $langcode = $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId();
         /** @var NodeInterface $single */
         $single = $this->entityTypeManager->getStorage('node')->load($id);
 
-        if (!$single || !$single->hasTranslation($langcode)) {
-            return $this->config->get('strict_translation') ? null : $single;
+        if ($single->hasTranslation($langcode)) {
+            return $single->getTranslation($langcode);
         }
 
-        return $single->getTranslation($langcode);
+        if ($single->get('langcode')->value === $langcode || !$this->config->get('strict_translation')) {
+            return $single;
+        }
+
+        return null;
     }
 }
