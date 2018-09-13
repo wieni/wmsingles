@@ -56,3 +56,13 @@ function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entit
 
     $operations += $nodeTypeOperations;
 }
+
+function wmsingles_rebuild()
+{
+    /** @var WmSingles $service */
+    $service = \Drupal::service('wmsingles');
+
+    foreach ($service->getAllSingles() as $single) {
+        $service->checkSingle($single);
+    }
+}
