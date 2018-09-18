@@ -86,17 +86,19 @@ class WmSingles
      * Returns a loaded single node.
      *
      * @param NodeTypeInterface $type
+     * @param string|null $langcode
      * @return NodeInterface|null
      * @throws \Exception
      */
-    public function getSingle(NodeTypeInterface $type)
+    public function getSingle(NodeTypeInterface $type, string $langcode = null)
     {
+        $langcode = $langcode ?? $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId();
         $tries = 0;
 
         do {
             $tries++;
             $id = $this->getSnowFlake($type);
-            $node = $this->loadNode($id);
+            $node = $this->loadNode($id, $langcode);
 
             if (!$node instanceof NodeInterface) {
                 $this->checkSingle($type);
@@ -110,10 +112,10 @@ class WmSingles
      * @param $bundle
      * @return NodeInterface|null
      */
-    public function getSingleByBundle($bundle)
+    public function getSingleByBundle(string $bundle, string $langcode = null)
     {
         $types = $this->getAllSingles();
-        return isset($types[$bundle]) ? $this->getSingle($types[$bundle]) : null;
+        return isset($types[$bundle]) ? $this->getSingle($types[$bundle], $langcode) : null;
     }
 
     /**
@@ -203,9 +205,8 @@ class WmSingles
         return $entity;
     }
 
-    private function loadNode($id)
+    private function loadNode(string $id, string $langcode)
     {
-        $langcode = $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId();
         /** @var NodeInterface $single */
         $single = $this->entityTypeManager->getStorage('node')->load($id);
 
