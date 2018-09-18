@@ -209,6 +209,10 @@ class WmSingles
         /** @var NodeInterface $single */
         $single = $this->entityTypeManager->getStorage('node')->load($id);
 
+        if (!$single instanceof NodeInterface) {
+            return null;
+        }
+
         if ($single->hasTranslation($langcode)) {
             return $single->getTranslation($langcode);
         }
