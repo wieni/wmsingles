@@ -6,7 +6,9 @@
  */
 
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\node\Entity\NodeType;
+use Drupal\Core\Path\AliasManagerInterface;
+use Drupal\node\NodeInterface;
+use Drupal\wmsingles\Service\WmSingles;
 
 /**
  * Implements hook_token_info().
@@ -45,29 +47,37 @@ function wmsingles_token_info()
  */
 function wmsingles_tokens($type, $tokens, array $data = [], array $options = [])
 {
-    $replacements =[];
+    $replacements = [];
 
-    if ($type == 'wmsingles') {
-        foreach ($tokens as $name => $original) {
-            $split = explode(':', $name);
+    if ($type !== 'wmsingles') {
+        return $replacements;
+    }
 
-            // Load the content type
-            $node = \Drupal::service('wmsingles')->getSingleByBundle($split[0]);
-            if ($node) {
-                // Failsafe
-                $replace = '';
+    /** @var WmSingles $wmSingles */
+    $wmSingles = \Drupal::service('wmsingles');
+    /** @var AliasManagerInterface $pathAliasManager */
+    $pathAliasManager = \Drupal::service('path.alias_manager');
 
-                if ($split[1] == 'url') {
-                    $canonical = '/node/' . $node->id();
-                    $alias = \Drupal::service('path.alias_manager')->getAliasByPath($canonical);
-                    if ($alias !== $canonical) {
-                        $replace = $alias;
-                    }
-                }
+    foreach ($tokens as $name => $original) {
+        $split = explode(':', $name);
 
-                $replacements[$original] = $replace;
+        // Load the content type
+        $node = $wmSingles->getSingleByBundle($split[0]);
+
+        if (!$node instanceof NodeInterface) {
+            continue;
+        }
+
+        if ($split[1] == 'url') {
+            $canonical = '/node/' . $node->id();
+            $alias = $pathAliasManager->getAliasByPath($canonical, $options['langcode']);
+
+            if ($alias !== $canonical) {
+                $replace = $alias;
             }
         }
+
+        $replacements[$original] = $replace ?? '';
     }
 
     return $replacements;
