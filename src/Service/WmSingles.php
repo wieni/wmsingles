@@ -64,17 +64,14 @@ class WmSingles
             $entity = $this->createNode($type);
         }
 
-        $snowFlake = $this->getSnowFlake($type);
-        $node = reset($nodes);
-
         // There's 1 node, but no snowflake (or a snowflake that doesn't match the nid)
-        if ($node !== $snowFlake) {
-            $entity = $storage->load($node);
-        }
+        if (count($nodes) === 1) {
+            $snowFlake = $this->getSnowFlake($type);
+            $node = reset($nodes);
 
-        // There's 1 node, but its id is not yet stored as snowflake
-        if (!$this->getSnowFlake($type)) {
-            $entity = $storage->load(reset($nodes));
+            if ($node !== $snowFlake) {
+                $entity = $storage->load($node);
+            }
         }
 
         if ($entity instanceof NodeInterface) {
