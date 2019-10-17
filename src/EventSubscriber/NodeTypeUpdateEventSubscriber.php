@@ -6,7 +6,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\wmSingles\Service\WmSingles;
 use Drupal\hook_event_dispatcher\Event\Entity\BaseEntityEvent;
-use Drupal\hook_event_dispatcher\HookEventDispatcherEvents;
+use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
 
 /**
  * Class NodeTypeUpdateEventSubscriber
@@ -44,10 +44,10 @@ class NodeTypeUpdateEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            HookEventDispatcherEvents::ENTITY_UPDATE => [
+            HookEventDispatcherInterface::ENTITY_UPDATE => [
                 ['checkForSingles'],
             ],
-            HookEventDispatcherEvents::ENTITY_INSERT => [
+            HookEventDispatcherInterface::ENTITY_INSERT => [
                 ['checkForSingles'],
             ],
         ];
