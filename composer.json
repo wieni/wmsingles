@@ -16,5 +16,10 @@
   ],
   "minimum-stability": "alpha",
   "prefer-stable": true,
-  "type": "drupal-module"
+  "type": "drupal-module",
+  "require": {
+    "drupal/hook_event_dispatcher": "^1.19",
+    "php": ">=7.0.0",
+    "drupal/core": "^8.0"
+  }
 }
