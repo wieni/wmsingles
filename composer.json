@@ -1,19 +1,19 @@
 {
-  "name": "wieni/wmsingles",
-  "description": "Singles are used for one-off bundles eg a bundle with exactly ONE entity",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Wieni",
-      "email": "info@wieni.be"
-    }
-  ],
-  "minimum-stability": "alpha",
-  "prefer-stable": true,
-  "type": "drupal-module",
-  "require": {
-    "drupal/hook_event_dispatcher": "^1.19",
-    "php": ">=7.0.0",
-    "drupal/core": "^8.0"
-  }
+    "name": "wieni/wmsingles",
+    "type": "drupal-module",
+    "description": "Singles are used for one-off bundles eg a bundle with exactly ONE entity",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wieni",
+            "email": "info@wieni.be"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "drupal/core": "^8.0",
+        "drupal/hook_event_dispatcher": "^1.19"
+    },
+    "minimum-stability": "alpha",
+    "prefer-stable": true
 }
