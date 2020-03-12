@@ -8,7 +8,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeTypeInterface;
-use Drupal\wmSingles\Service\WmSinglesInterface;
+use Drupal\wmsingles\Service\WmSinglesInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class OverviewController implements ContainerInjectionInterface

@@ -7,7 +7,7 @@ use Drupal\Core\Access\AccessResultInterface;
 use Drupal\Core\Routing\Access\AccessInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\node\NodeTypeInterface;
-use Drupal\wmSingles\Service\WmSinglesInterface;
+use Drupal\wmsingles\Service\WmSinglesInterface;
 
 class NodeAddAccess implements AccessInterface
 {

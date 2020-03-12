@@ -5,7 +5,7 @@ namespace Drupal\wmsingles\EventSubscriber;
 use Drupal\hook_event_dispatcher\Event\Entity\BaseEntityEvent;
 use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
 use Drupal\node\NodeTypeInterface;
-use Drupal\wmSingles\Service\WmSinglesInterface;
+use Drupal\wmsingles\Service\WmSinglesInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class NodeTypeUpdateEventSubscriber implements EventSubscriberInterface

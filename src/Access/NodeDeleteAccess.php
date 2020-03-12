@@ -9,7 +9,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
-use Drupal\wmSingles\Service\WmSinglesInterface;
+use Drupal\wmsingles\Service\WmSinglesInterface;
 
 class NodeDeleteAccess implements AccessInterface
 {
