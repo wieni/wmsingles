@@ -1,25 +1,15 @@
 <?php
 
-/**
- * @file
- * Builds placeholder replacement tokens for wmsingles
- */
-
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Path\AliasManagerInterface;
 use Drupal\node\NodeInterface;
-use Drupal\wmsingles\Service\WmSingles;
+use Drupal\wmsingles\Service\WmSinglesInterface;
 
-/**
- * Implements hook_token_info().
- *
- * @return array
- */
 function wmsingles_token_info()
 {
     $types['wmsingles'] = [
-        'name' => t("WmSingles"),
-        'description' => t("WmSingles tokens"),
+        'name' => t('WmSingles'),
+        'description' => t('WmSingles tokens'),
     ];
 
     // Get all singles.
@@ -28,7 +18,7 @@ function wmsingles_token_info()
     foreach (\Drupal::service('wmsingles')->getAllSingles() as $type) {
         $wmSingles[$type->id() . ':url'] = [
             'name' => $type->label() . ' URL',
-            'description' => t('The Alias of the single.')
+            'description' => t('The Alias of the single.'),
         ];
     }
 
@@ -40,11 +30,6 @@ function wmsingles_token_info()
     ];
 }
 
-/**
- * Implements hook_tokens().
- *
- * @return array
- */
 function wmsingles_tokens($type, $tokens, array $data = [], array $options = [])
 {
     $replacements = [];
@@ -53,7 +38,7 @@ function wmsingles_tokens($type, $tokens, array $data = [], array $options = [])
         return $replacements;
     }
 
-    /** @var WmSingles $wmSingles */
+    /** @var WmSinglesInterface $wmSingles */
     $wmSingles = \Drupal::service('wmsingles');
     /** @var AliasManagerInterface $pathAliasManager */
     $pathAliasManager = \Drupal::service('path.alias_manager');
@@ -68,7 +53,7 @@ function wmsingles_tokens($type, $tokens, array $data = [], array $options = [])
             continue;
         }
 
-        if ($split[1] == 'url') {
+        if ($split[1] === 'url') {
             $canonical = '/node/' . $node->id();
             $alias = $pathAliasManager->getAliasByPath($canonical, $options['langcode']);
 

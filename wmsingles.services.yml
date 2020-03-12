@@ -1,42 +1,45 @@
 services:
-  wmsingles:
-    class: Drupal\wmsingles\Service\WmSingles
-    arguments:
-      - '@entity_type.manager'
-      - '@state'
-      - '@language_manager'
-      - '@config.factory'
+    wmsingles:
+        class: Drupal\wmsingles\Service\WmSingles
+        arguments:
+            - '@entity_type.manager'
+            - '@state'
+            - '@language_manager'
+            - '@config.factory'
 
-  # Event subscribers.
-  wmsingles.nodeform_subscriber:
-    class: Drupal\wmsingles\EventSubscriber\NodeFormEventSubscriber
-    tags:
-      - { name: event_subscriber }
-    arguments: ['@current_route_match', '@wmsingles']
-  wmsingles.nodetypeform_subscriber:
-    class: Drupal\wmsingles\EventSubscriber\NodeTypeFormEventSubscriber
-    tags:
-      - { name: event_subscriber }
-  wmsingles.nodetypeupdate_subscriber:
-    class: Drupal\wmsingles\EventSubscriber\NodeTypeUpdateEventSubscriber
-    arguments: ['@wmsingles']
-    tags:
-      - { name: event_subscriber }
+    # Event subscribers.
+    wmsingles.nodeform_subscriber:
+        class: Drupal\wmsingles\EventSubscriber\NodeFormEventSubscriber
+        tags: [{ name: event_subscriber }]
+        arguments:
+            - '@current_route_match'
+            - '@wmsingles'
 
-  # Routing
-  wmsingles.routing.contest:
-    class: Drupal\wmsingles\Routing\NodeRouterSubscriber
-    tags:
-      - { name: event_subscriber }
+    wmsingles.nodetypeform_subscriber:
+        class: Drupal\wmsingles\EventSubscriber\NodeTypeFormEventSubscriber
+        tags: [{ name: event_subscriber }]
 
-  # Access
-  wmsingles.access.node.delete:
-    class: Drupal\wmsingles\Access\NodeDeleteAccess
-    arguments: ['@wmsingles']
-    tags:
-      - { name: access_check, applies_to: _wmsingles_node_delete_access_check }
-  wmsingles.access.node.add:
-    class: Drupal\wmsingles\Access\NodeAddAccess
-    arguments: ['@wmsingles', '@current_route_match']
-    tags:
-      - { name: access_check, applies_to: _wmsingles_node_add_access_check }
+    wmsingles.nodetypeupdate_subscriber:
+        class: Drupal\wmsingles\EventSubscriber\NodeTypeUpdateEventSubscriber
+        tags: [{ name: event_subscriber }]
+        arguments:
+            - '@wmsingles'
+
+    # Routing
+    wmsingles.routing.contest:
+        class: Drupal\wmsingles\Routing\NodeRouterSubscriber
+        tags: [{ name: event_subscriber }]
+
+    # Access
+    wmsingles.access.node.delete:
+        class: Drupal\wmsingles\Access\NodeDeleteAccess
+        tags: [{ name: access_check, applies_to: _wmsingles_node_delete_access_check }]
+        arguments:
+            - '@wmsingles'
+
+    wmsingles.access.node.add:
+        class: Drupal\wmsingles\Access\NodeAddAccess
+        tags: [{ name: access_check, applies_to: _wmsingles_node_add_access_check }]
+        arguments:
+            - '@wmsingles'
+            - '@current_route_match'

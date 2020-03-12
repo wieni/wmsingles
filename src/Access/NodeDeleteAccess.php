@@ -3,38 +3,26 @@
 namespace Drupal\wmsingles\Access;
 
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Access\AccessResultInterface;
 use Drupal\Core\Routing\Access\AccessInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
-use Drupal\wmSingles\Service\WmSingles;
-use Drupal\node\Entity\NodeType;
-use Drupal\Core\Session\AccountInterface;
+use Drupal\wmSingles\Service\WmSinglesInterface;
 
-/**
- * Class NodeDeleteAccess
- * @package Drupal\wmSingles\Access
- */
 class NodeDeleteAccess implements AccessInterface
 {
-    /** @var  WmSingles */
-    private $wmSingles;
+    /** @var WmSinglesInterface */
+    protected $wmSingles;
 
-    /**
-     * NodeDeleteAccess constructor.
-     * @param WmSingles $wmSingles
-     */
     public function __construct(
-        WmSingles $wmSingles
+        WmSinglesInterface $wmSingles
     ) {
         $this->wmSingles = $wmSingles;
     }
 
-    /**
-     * @param NodeInterface $node
-     * @param AccountInterface $account
-     * @return \Drupal\Core\Access\AccessResultAllowed|\Drupal\Core\Access\AccessResultForbidden|\Drupal\Core\Access\AccessResultNeutral
-     */
-    public function access(NodeInterface $node, AccountInterface $account)
+    public function access(NodeInterface $node, AccountInterface $account): AccessResultInterface
     {
         if ($account->hasPermission('administer wmsingles')) {
             return AccessResult::allowed();

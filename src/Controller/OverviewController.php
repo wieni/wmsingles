@@ -2,50 +2,33 @@
 
 namespace Drupal\wmsingles\Controller;
 
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\node\Entity\NodeType;
-use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
-use Drupal\Core\Controller\ControllerBase;
+use Drupal\wmSingles\Service\WmSinglesInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\wmSingles\Service\WmSingles;
 
-/**
- * Class OverviewController
- * @package Drupal\wmsingles\Controller
- */
-class OverviewController extends ControllerBase
+class OverviewController implements ContainerInjectionInterface
 {
-    /**
-     * @var WmSingles
-     */
+    use StringTranslationTrait;
+
+    /** @var EntityTypeManagerInterface */
+    protected $entityTypeManager;
+    /** @var WmSinglesInterface */
     protected $wmSingles;
 
-    /**
-     * OverviewController constructor.
-     * @param WmSingles $wmSingles
-     */
-    public function __construct(
-        WmSingles $wmSingles
-    ) {
-        $this->wmSingles = $wmSingles;
-    }
-
-    /**
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-     *
-     * @return static
-     */
     public static function create(ContainerInterface $container)
     {
-        return new static(
-            $container->get('wmsingles')
-        );
+        $instance = new static;
+        $instance->entityTypeManager = $container->get('entity_type.manager');
+        $instance->wmSingles = $container->get('wmsingles');
+
+        return $instance;
     }
 
-    /**
-     * @return mixed
-     */
     public function overview()
     {
         $output['table'] = [
@@ -66,14 +49,14 @@ class OverviewController extends ControllerBase
 
             if ($node) {
                 $nodeType = NodeType::load($node->bundle());
-                $operations = $this->entityTypeManager()->getListBuilder('node')->getOperations($node);
+                $operations = $this->entityTypeManager->getListBuilder('node')->getOperations($node);
 
                 $output['table'][$item->id()]['title'] = [
                     '#markup' => sprintf(
                         '<a href="%s">%s</a>',
                         Url::fromRoute('entity.node.canonical', ['node' => $node->id()])->toString(),
                         $node->label()
-                    )
+                    ),
                 ];
 
                 $output['table'][$item->id()]['bundle'] = [

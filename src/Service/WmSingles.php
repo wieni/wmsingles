@@ -7,12 +7,12 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\State\StateInterface;
+use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
-use Drupal\node\Entity\NodeType;
-use Drupal\Core\State\StateInterface;
 
-class WmSingles
+class WmSingles implements WmSinglesInterface
 {
     /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
@@ -21,7 +21,7 @@ class WmSingles
     /** @var LanguageManagerInterface */
     protected $languageManager;
     /** @var Config */
-    private $config;
+    protected $config;
 
     public function __construct(
         EntityTypeManagerInterface $entityTypeManager,
@@ -35,14 +35,7 @@ class WmSingles
         $this->config = $configFactory->get('wmsingles.settings');
     }
 
-    /**
-     * This functions checks that for each key there is a corresponding
-     * entity in the given bundle, and creates one if it's not there.
-     *
-     * @param NodeTypeInterface $type
-     * @throws \Exception
-     */
-    public function checkSingle(NodeTypeInterface $type)
+    public function checkSingle(NodeTypeInterface $type): void
     {
         if (!$this->isSingle($type)) {
             return;
@@ -79,15 +72,7 @@ class WmSingles
         }
     }
 
-    /**
-     * Returns a loaded single node.
-     *
-     * @param NodeTypeInterface $type
-     * @param string|null $langcode
-     * @return NodeInterface|null
-     * @throws \Exception
-     */
-    public function getSingle(NodeTypeInterface $type, string $langcode = null)
+    public function getSingle(NodeTypeInterface $type, ?string $langcode = null): ?NodeInterface
     {
         $langcode = $langcode ?? $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId();
         $tries = 0;
@@ -95,6 +80,11 @@ class WmSingles
         do {
             $tries++;
             $id = $this->getSnowFlake($type);
+
+            if (!$id) {
+                $this->checkSingle($type);
+            }
+
             $node = $this->loadNode($id, $langcode);
 
             if (!$node instanceof NodeInterface) {
@@ -105,88 +95,55 @@ class WmSingles
         return $node;
     }
 
-    /**
-     * @param $bundle
-     * @return NodeInterface|null
-     */
-    public function getSingleByBundle(string $bundle, string $langcode = null)
+    public function getSingleByBundle(string $bundle, ?string $langcode = null): ?NodeInterface
     {
         $types = $this->getAllSingles();
-        return isset($types[$bundle]) ? $this->getSingle($types[$bundle], $langcode) : null;
+
+        return isset($types[$bundle])
+            ? $this->getSingle($types[$bundle], $langcode) :
+            null;
     }
 
-    /**
-     * Check whether a bundle is single or not.
-     *
-     * @param NodeTypeInterface $type
-     * @return bool
-     */
-    public function isSingle(NodeTypeInterface $type)
+    public function isSingle(NodeTypeInterface $type): bool
     {
         return $type->getThirdPartySetting('wmsingles', 'isSingle', false);
     }
 
-    /**
-     * Get all single content types.
-     * @return array|mixed
-     */
-    public function getAllSingles()
+    public function getAllSingles(): array
     {
         $list = &drupal_static(__FUNCTION__);
-        if (!isset($list)) {
-            $list = [];
-            /** @var NodeTypeInterface $type */
-            foreach (NodeType::loadMultiple() as $type) {
-                if ($this->isSingle($type)) {
-                    $list[$type->get('type')] = $type;
-                }
+
+        if (isset($list)) {
+            return $list;
+        }
+
+        $list = [];
+        /** @var NodeTypeInterface $type */
+        foreach (NodeType::loadMultiple() as $type) {
+            if ($this->isSingle($type)) {
+                $list[$type->get('type')] = $type;
             }
         }
+
         return $list;
     }
 
-    /**
-     * Set the snowflake entity id for a single bundle.
-     *
-     * @param NodeTypeInterface $type
-     * @param NodeInterface $node
-     */
-    public function setSnowFlake(NodeTypeInterface $type, NodeInterface $node)
+    protected function setSnowFlake(NodeTypeInterface $type, NodeInterface $node): void
     {
         $this->state->set($this->getSnowFlakeKey($type), (int) $node->id());
     }
 
-    /**
-     * Delete the snowflake entity id for a single bundle.
-     *
-     * @param NodeTypeInterface $type
-     */
-    public function deleteSnowFlake(NodeTypeInterface $type)
+    protected function getSnowFlake(NodeTypeInterface $type): ?int
     {
-        $this->state->delete($this->getSnowFlakeKey($type));
+        return $this->state->get($this->getSnowFlakeKey($type));
     }
 
-    /**
-     * Get the current snowflake id for a single bundle.
-     * @param NodeTypeInterface $type
-     * @return integer
-     */
-    public function getSnowFlake(NodeTypeInterface $type)
-    {
-        return $this->state->get($this->getSnowFlakeKey($type), 0);
-    }
-
-    private function getSnowFlakeKey(NodeTypeInterface $type)
+    protected function getSnowFlakeKey(NodeTypeInterface $type): string
     {
         return 'wmsingles.' . $type->id();
     }
 
-    /**
-     * Create a node to be used for a single content type
-     * @param NodeTypeInterface $type
-     * @return NodeInterface
-     */
-    protected function createNode(NodeTypeInterface $type)
+    protected function createNode(NodeTypeInterface $type): NodeInterface
     {
         /** @var NodeInterface $entity */
         $entity = $this
@@ -195,14 +152,14 @@ class WmSingles
             ->create([
                 'type' => $type->id(),
                 'title' => $type->label(),
-                'path' =>  ['alias' => '/' . $type->id()]
+                'path' => ['alias' => '/' . $type->id()],
             ]);
         $entity->save();
 
         return $entity;
     }
 
-    private function loadNode(string $id, string $langcode)
+    protected function loadNode(string $id, string $langcode)
     {
         /** @var NodeInterface $single */
         $single = $this->entityTypeManager->getStorage('node')->load($id);

@@ -1,24 +1,12 @@
 <?php
 
-/**
- * @file
- * Defines the WmSingles module.
- *
- * @category module
- */
-
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\NodeType;
+use Drupal\wmsingles\Service\WmSinglesInterface;
 
-/**
- * Implements hook_entity_operation_alter().
- *
- * @param array $operations
- * @param \Drupal\Core\Entity\EntityInterface $entity
- */
-function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entity\EntityInterface $entity)
+function wmsingles_entity_operation_alter(array &$operations, EntityInterface $entity)
 {
     /** @var AccountInterface $user */
     $user = \Drupal::currentUser();
@@ -39,7 +27,7 @@ function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entit
 
     if (!$user->hasPermission('administer wmsingles') && !empty($operations['delete'])) {
         unset($operations['delete']);
-    } else if (!empty($operations['delete'])) {
+    } elseif (!empty($operations['delete'])) {
         $operations['delete']['weight'] = 15;
     }
 
@@ -59,7 +47,7 @@ function wmsingles_entity_operation_alter(array &$operations, \Drupal\Core\Entit
 
 function wmsingles_rebuild()
 {
-    /** @var WmSingles $service */
+    /** @var WmSinglesInterface $service */
     $service = \Drupal::service('wmsingles');
 
     foreach ($service->getAllSingles() as $single) {

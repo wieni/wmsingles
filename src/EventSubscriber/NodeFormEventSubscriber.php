@@ -2,40 +2,27 @@
 
 namespace Drupal\wmsingles\EventSubscriber;
 
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Routing\CurrentRouteMatch;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\hook_event_dispatcher\Event\Form\BaseFormEvent;
-use Drupal\wmsingles\Service\WmSingles;
+use Drupal\wmsingles\Service\WmSinglesInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drupal\hook_event_dispatcher\Event\Form\FormBaseAlterEvent;
-use Drupal\node\NodeTypeInterface;
 
-/**
- * Class NodeFormEventSubscriber
- * @package Drupal\wmSingles\EventSubscriber
- */
 class NodeFormEventSubscriber implements EventSubscriberInterface
 {
-    /** @var CurrentRouteMatch */
-    private $currentRouteMatch;
-    /** @var WmSingles */
-    private $wmSingles;
+    /** @var RouteMatchInterface */
+    protected $currentRouteMatch;
+    /** @var WmSinglesInterface */
+    protected $wmSingles;
 
-    /**
-     * NodeFormEventSubscriber constructor.
-     * @param CurrentRouteMatch $currentRouteMatch
-     * @param WmSingles $wmSingles
-     */
-    public function __construct($currentRouteMatch, $wmSingles)
-    {
+    public function __construct(
+        RouteMatchInterface $currentRouteMatch,
+        WmSinglesInterface $wmSingles
+    ) {
         $this->currentRouteMatch = $currentRouteMatch;
         $this->wmSingles = $wmSingles;
     }
 
-    /**
-     * @param BaseFormEvent $event
-     */
-    public function formAlter(BaseFormEvent $event)
+    public function formAlter(BaseFormEvent $event): void
     {
         $form = &$event->getForm();
 
@@ -54,9 +41,6 @@ class NodeFormEventSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function getSubscribedEvents()
     {
         return [

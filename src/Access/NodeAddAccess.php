@@ -3,42 +3,28 @@
 namespace Drupal\wmsingles\Access;
 
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Access\AccessResultInterface;
 use Drupal\Core\Routing\Access\AccessInterface;
-use Drupal\node\NodeInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\node\NodeTypeInterface;
-use Drupal\wmSingles\Service\WmSingles;
-use Drupal\node\Entity\NodeType;
-use Drupal\Core\Routing\CurrentRouteMatch;
+use Drupal\wmSingles\Service\WmSinglesInterface;
 
-/**
- * Class NodeAddAccess
- * @package Drupal\wmSingles\Access
- */
 class NodeAddAccess implements AccessInterface
 {
-    /** @var  CurrentRouteMatch */
-    private $currentRoute;
+    /** @var RouteMatchInterface */
+    protected $currentRoute;
+    /** @var WmSinglesInterface */
+    protected $wmSingles;
 
-    /** @var  WmSingles */
-    private $wmSingles;
-
-    /**
-     * NodeDeleteAccess constructor.
-     * @param WmSingles $wmSingles
-     */
     public function __construct(
-        WmSingles $wmSingles,
-        CurrentRouteMatch $currentRoute
+        WmSinglesInterface $wmSingles,
+        RouteMatchInterface $currentRoute
     ) {
         $this->wmSingles = $wmSingles;
         $this->currentRoute = $currentRoute;
     }
 
-    /**
-     * @param NodeInterface $node
-     * @return \Drupal\Core\Access\AccessResultForbidden|\Drupal\Core\Access\AccessResultNeutral
-     */
-    public function access()
+    public function access(): AccessResultInterface
     {
         /** @var NodeTypeInterface $type */
         $type = $this->currentRoute->getParameter('node_type');
