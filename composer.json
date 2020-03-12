@@ -10,8 +10,8 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
-        "drupal/core": "^8.0",
+        "php": ">=7.1.0",
+        "drupal/core": "^8.0 || ^9.0",
         "drupal/hook_event_dispatcher": "^1.19"
     },
     "require-dev": {
@@ -24,7 +24,7 @@
             "url": "https://packages.drupal.org/8"
         }
     },
-    "minimum-stability": "alpha",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
         "coding-standards": [
