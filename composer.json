@@ -1,7 +1,7 @@
 {
     "name": "wieni/wmsingles",
     "type": "drupal-module",
-    "description": "Singles are used for one-off bundles eg a bundle with exactly ONE entity",
+    "description": "Singles are node types used for one-off pages that have unique content requirements",
     "license": "MIT",
     "authors": [
         {
