@@ -35,7 +35,6 @@ class OverviewController implements ContainerInjectionInterface
             '#type' => 'table',
             '#header' => [
                 $this->t('Name'),
-                $this->t('Type'),
                 $this->t('Description'),
                 $this->t('Operations'),
             ],
@@ -48,7 +47,6 @@ class OverviewController implements ContainerInjectionInterface
             $node = $this->wmSingles->getSingleByBundle($item->id());
 
             if ($node) {
-                $nodeType = NodeType::load($node->bundle());
                 $operations = $this->entityTypeManager->getListBuilder('node')->getOperations($node);
 
                 $output['table'][$item->id()]['title'] = [
@@ -57,10 +55,6 @@ class OverviewController implements ContainerInjectionInterface
                         Url::fromRoute('entity.node.canonical', ['node' => $node->id()])->toString(),
                         $node->label()
                     ),
-                ];
-
-                $output['table'][$item->id()]['bundle'] = [
-                    '#plain_text' => $nodeType->label(),
                 ];
 
                 $output['table'][$item->id()]['description'] = [
