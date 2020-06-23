@@ -53,7 +53,7 @@ class OverviewController implements ContainerInjectionInterface
                     '#markup' => sprintf(
                         '<a href="%s">%s</a>',
                         Url::fromRoute('entity.node.canonical', ['node' => $node->id()])->toString(),
-                        $node->label()
+                        $node->label() ?: $item->label()
                     ),
                 ];
 

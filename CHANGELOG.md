@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [2.3.1] - 2020-06-23
+## Changed
+- Change overview labels to fallback to the node type label 
+
 ## [2.3.0] - 2020-04-22
 ## Changed
 - Remove _Type_ column from overview
