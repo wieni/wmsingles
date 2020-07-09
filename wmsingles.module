@@ -44,13 +44,3 @@ function wmsingles_entity_operation_alter(array &$operations, EntityInterface $e
 
     $operations += $nodeTypeOperations;
 }
-
-function wmsingles_rebuild()
-{
-    /** @var WmSinglesInterface $service */
-    $service = \Drupal::service('wmsingles');
-
-    foreach ($service->getAllSingles() as $single) {
-        $service->checkSingle($single);
-    }
-}

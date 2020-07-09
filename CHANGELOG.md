@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [2.3.2] - 2020-07-09
+## Fixed
+- Stop creating singles during cache rebuild. This feature made it in 
+ some cases impossible to remove single node types. 
+
 ## [2.3.1] - 2020-06-23
 ## Changed
 - Change overview labels to fallback to the node type label 
