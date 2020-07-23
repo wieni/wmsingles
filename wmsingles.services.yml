@@ -10,18 +10,15 @@ services:
     # Event subscribers.
     wmsingles.nodeform_subscriber:
         class: Drupal\wmsingles\EventSubscriber\NodeFormEventSubscriber
-        tags: [{ name: event_subscriber }]
         arguments:
             - '@current_route_match'
             - '@wmsingles'
 
     wmsingles.nodetypeform_subscriber:
         class: Drupal\wmsingles\EventSubscriber\NodeTypeFormEventSubscriber
-        tags: [{ name: event_subscriber }]
 
     wmsingles.nodetypeupdate_subscriber:
         class: Drupal\wmsingles\EventSubscriber\NodeTypeUpdateEventSubscriber
-        tags: [{ name: event_subscriber }]
         arguments:
             - '@wmsingles'
 

@@ -1,10 +1,10 @@
 <?php
 
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\NodeType;
-use Drupal\wmsingles\Service\WmSinglesInterface;
 
 function wmsingles_entity_operation_alter(array &$operations, EntityInterface $entity)
 {
@@ -43,4 +43,32 @@ function wmsingles_entity_operation_alter(array &$operations, EntityInterface $e
     }
 
     $operations += $nodeTypeOperations;
+}
+
+function wmsingles_entity_insert(EntityInterface $entity)
+{
+    \Drupal::getContainer()
+        ->get('wmsingles.nodetypeupdate_subscriber')
+        ->checkForSingles($entity);
+}
+
+function wmsingles_entity_update(EntityInterface $entity)
+{
+    \Drupal::getContainer()
+        ->get('wmsingles.nodetypeupdate_subscriber')
+        ->checkForSingles($entity);
+}
+
+function wmsingles_form_base_node_type_form_alter(array &$form, FormStateInterface $formState)
+{
+    \Drupal::getContainer()
+        ->get('wmsingles.nodetypeform_subscriber')
+        ->alterNodeTypeForm($form, $formState);
+}
+
+function wmsingles_form_base_node_form_alter(array &$form)
+{
+    \Drupal::getContainer()
+        ->get('wmsingles.nodeform_subscriber')
+        ->formAlter($form);
 }

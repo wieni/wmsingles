@@ -3,11 +3,9 @@
 namespace Drupal\wmsingles\EventSubscriber;
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\hook_event_dispatcher\Event\Form\BaseFormEvent;
 use Drupal\wmsingles\Service\WmSinglesInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class NodeFormEventSubscriber implements EventSubscriberInterface
+class NodeFormEventSubscriber
 {
     /** @var RouteMatchInterface */
     protected $currentRouteMatch;
@@ -22,10 +20,8 @@ class NodeFormEventSubscriber implements EventSubscriberInterface
         $this->wmSingles = $wmSingles;
     }
 
-    public function formAlter(BaseFormEvent $event): void
+    public function formAlter(array &$form): void
     {
-        $form = &$event->getForm();
-
         if ($this->currentRouteMatch->getRouteName() !== 'entity.node.edit_form') {
             return;
         }
@@ -39,12 +35,5 @@ class NodeFormEventSubscriber implements EventSubscriberInterface
             $form['meta']['author']['#access'] = false;
             $form['meta']['published']['#access'] = false;
         }
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return [
-            'hook_event_dispatcher.form_base_node_form.alter' => 'formAlter',
-        ];
     }
 }

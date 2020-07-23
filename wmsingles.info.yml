@@ -6,4 +6,3 @@ core_version_requirement: ^8 || ^9
 package: Wieni
 dependencies:
   - node
-  - hook_event_dispatcher
