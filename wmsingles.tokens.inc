@@ -1,7 +1,7 @@
 <?php
 
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Path\AliasManagerInterface;
+use Drupal\path_alias\AliasManagerInterface;
 use Drupal\node\NodeInterface;
 use Drupal\wmsingles\Service\WmSinglesInterface;
 
@@ -41,7 +41,7 @@ function wmsingles_tokens($type, $tokens, array $data = [], array $options = [])
     /** @var WmSinglesInterface $wmSingles */
     $wmSingles = \Drupal::service('wmsingles');
     /** @var AliasManagerInterface $pathAliasManager */
-    $pathAliasManager = \Drupal::service('path.alias_manager');
+    $pathAliasManager = \Drupal::service('path_alias.manager');
 
     foreach ($tokens as $name => $original) {
         $split = explode(':', $name);
