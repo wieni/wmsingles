@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+## [2.4.2] - 2020-11-10
+## Removed
+- Fix warning on singles overview when the user does not have edit access
+
 ## [2.4.1] - 2020-07-23
 ## Removed
 - Remove call to path.alias_manager

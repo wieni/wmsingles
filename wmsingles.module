@@ -23,7 +23,9 @@ function wmsingles_entity_operation_alter(array &$operations, EntityInterface $e
         'url' => Url::fromRoute('entity.node.canonical', ['node' => $entity->id()]),
     ];
 
-    $operations['edit']['weight'] = 4;
+    if (!empty($operations['edit'])) {
+        $operations['edit']['weight'] = 4;
+    }
 
     if (!$user->hasPermission('administer wmsingles') && !empty($operations['delete'])) {
         unset($operations['delete']);
