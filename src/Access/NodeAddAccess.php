@@ -11,23 +11,19 @@ use Drupal\wmsingles\Service\WmSinglesInterface;
 
 class NodeAddAccess implements AccessInterface
 {
-    /** @var RouteMatchInterface */
-    protected $currentRoute;
     /** @var WmSinglesInterface */
     protected $wmSingles;
 
     public function __construct(
-        WmSinglesInterface $wmSingles,
-        RouteMatchInterface $currentRoute
+        WmSinglesInterface $wmSingles
     ) {
         $this->wmSingles = $wmSingles;
-        $this->currentRoute = $currentRoute;
     }
 
-    public function access(): AccessResultInterface
+    public function access(RouteMatchInterface $routeMatch): AccessResultInterface
     {
         /** @var NodeTypeInterface $type */
-        $type = $this->currentRoute->getParameter('node_type');
+        $type = $routeMatch->getParameter('node_type');
 
         if ($type && $this->wmSingles->isSingle($type)) {
             return AccessResult::forbidden();
