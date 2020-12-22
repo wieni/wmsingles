@@ -39,3 +39,10 @@ services:
         tags: [{ name: access_check, applies_to: _wmsingles_node_add_access_check }]
         arguments:
             - '@wmsingles'
+
+    wmsingles.twig_extension:
+        class: Drupal\wmsingles\Twig\Extension\SingleExtension
+        tags: [{ name: twig.extension }]
+        arguments:
+            - '@renderer'
+            - '@wmsingles'
