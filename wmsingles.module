@@ -61,14 +61,14 @@ function wmsingles_entity_update(EntityInterface $entity)
         ->checkForSingles($entity);
 }
 
-function wmsingles_form_base_node_type_form_alter(array &$form, FormStateInterface $formState)
+function wmsingles_form_node_type_form_alter(array &$form, FormStateInterface $formState)
 {
     \Drupal::getContainer()
         ->get('wmsingles.nodetypeform_subscriber')
         ->alterNodeTypeForm($form, $formState);
 }
 
-function wmsingles_form_base_node_form_alter(array &$form)
+function wmsingles_form_node_form_alter(array &$form)
 {
     \Drupal::getContainer()
         ->get('wmsingles.nodeform_subscriber')
