@@ -22,24 +22,6 @@ services:
         arguments:
             - '@wmsingles'
 
-    # Routing
-    wmsingles.routing.contest:
-        class: Drupal\wmsingles\Routing\NodeRouterSubscriber
-        tags: [{ name: event_subscriber }]
-
-    # Access
-    wmsingles.access.node.delete:
-        class: Drupal\wmsingles\Access\NodeDeleteAccess
-        tags: [{ name: access_check, applies_to: _wmsingles_node_delete_access_check }]
-        arguments:
-            - '@wmsingles'
-
-    wmsingles.access.node.add:
-        class: Drupal\wmsingles\Access\NodeAddAccess
-        tags: [{ name: access_check, applies_to: _wmsingles_node_add_access_check }]
-        arguments:
-            - '@wmsingles'
-
     wmsingles.twig_extension:
         class: Drupal\wmsingles\Twig\Extension\SingleExtension
         tags: [{ name: twig.extension }]

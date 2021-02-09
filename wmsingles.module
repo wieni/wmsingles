@@ -2,14 +2,12 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\NodeType;
+use Drupal\wmsingles\Access\SingleNodeAccessControlHandler;
 
 function wmsingles_entity_operation_alter(array &$operations, EntityInterface $entity)
 {
-    /** @var AccountInterface $user */
-    $user = \Drupal::currentUser();
     /** @var EntityInterface|null $single */
     $single = \Drupal::service('wmsingles')->getSingleByBundle($entity->bundle());
 
@@ -27,9 +25,7 @@ function wmsingles_entity_operation_alter(array &$operations, EntityInterface $e
         $operations['edit']['weight'] = 4;
     }
 
-    if (!$user->hasPermission('administer wmsingles') && !empty($operations['delete'])) {
-        unset($operations['delete']);
-    } elseif (!empty($operations['delete'])) {
+    if (!empty($operations['delete'])) {
         $operations['delete']['weight'] = 15;
     }
 
@@ -73,4 +69,12 @@ function wmsingles_form_node_form_alter(array &$form)
     \Drupal::getContainer()
         ->get('wmsingles.nodeform_subscriber')
         ->formAlter($form);
+}
+
+/**
+ * Implements @see hook_entity_type_alter().
+ */
+function wmsingles_entity_type_alter(array &$entityTypes): void
+{
+    $entityTypes['node']->setHandlerClass('access', SingleNodeAccessControlHandler::class);
 }
