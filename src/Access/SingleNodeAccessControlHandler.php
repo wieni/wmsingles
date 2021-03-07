@@ -55,8 +55,6 @@ class SingleNodeAccessControlHandler extends NodeAccessControlHandler
             return $return_as_object ? $result : $result->isAllowed();
         }
 
-        $result = parent::createAccess($entity_bundle, $account, $context, $return_as_object);
-
-        return $return_as_object ? $result : $result->isAllowed();
+        return parent::createAccess($entity_bundle, $account, $context);
     }
 }
