@@ -38,6 +38,12 @@ class SingleNodeAccessControlHandler extends NodeAccessControlHandler
             return $return_as_object ? $result : $result->isAllowed();
         }
 
+        if ($isSingle && $operation === 'clone') {
+            $result = AccessResult::forbidden('Singles cannot be cloned.')->cachePerPermissions();
+
+            return $return_as_object ? $result : $result->isAllowed();
+        }
+
         $result = parent::access($entity, $operation, $account, true);
 
         return $return_as_object ? $result : $result->isAllowed();
