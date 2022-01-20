@@ -11,6 +11,13 @@ Check [`UPGRADING.md`](UPGRADING.md) for instructions.
 - Rename module from `wmsingles` to `node_singles`
 - Move module development to Drupal.org, changing the namespace from `wieni` to `drupal`
 
+## [2.5.8] - 2022-01-20
+## Changed
+- Make README point to Drupal.org
+
+## Fixed
+- Fix upgrade command on macOS
+
 ## [2.5.7] - 2022-01-20
 ## Added
 - Document 3.0.0 upgrade
