@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Fixed
+- Increase Drupal core version due to path_alias dependency
+
 ## [2.5.5] - 2021-04-11
 ## Changed
 - Disallow cloning singles using the [Entity Clone module](https://www.drupal.org/project/entity_clone)
