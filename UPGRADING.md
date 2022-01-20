@@ -14,12 +14,17 @@ composer install drupal/node_singles
 drush en node_singles
 ```
 
-2. Use the bash script in `scripts/update-to-v3.sh` for an 
-automatic upgrade of your project. Paths that have to be scanned should be passed as arguments:
+2. Use the bash script in `scripts/update-to-v3.sh` for an
+   automatic upgrade of your project. Paths that have to be scanned should be passed as arguments:
 
 ```bash
 chmod +x ./public/modules/contrib/wmsingles/scripts/update-to-v3.sh
 ./public/modules/contrib/wmsingles/scripts/update-to-v3.sh config/* public/modules/custom/* public/themes/custom/* public/sites/*
+```
+
+If you're using macOS, make sure to run this before the script:
+```bash
+brew install gnu-sed
 ```
 
 3. Apply any changes:

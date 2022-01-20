@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if command -v brew &> /dev/null && brew ls --versions gnu-sed &> /dev/null; then
+  PATH="$(brew --prefix gnu-sed)/libexec/gnubin:$PATH"
+fi
+
 find "$@" -type f -print0 | xargs -0 sed -i -r \
   -e 's/wmsingles\.settings/node_singles\.settings/g' \
   -e 's/isSingle:/is_single:/g' \
