@@ -40,3 +40,8 @@ drush cim -y
 ```bash
 composer remove wieni/wmsingles
 ```
+
+## [2.5.1] - 2021-02-02
+In `2.5.1` we added a `SingleNodeAccessControlHandler`. This handler class will be applied by overwriting it with `hook_entity_type_alter`. We notice this might overwrite your custom `hook_entity_type_alter`. 
+
+To be sure you custom code is run last, you can edit the implementation order with a `hook_module_implements_alter`.

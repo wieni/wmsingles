@@ -46,6 +46,8 @@ Check [`UPGRADING.md`](UPGRADING.md) for instructions.
 - Fix singles appearing on /node/add
 
 ## [2.5.1] - 2021-02-02
+## Changed
+- Replace operation alters with `SingleNodeAccessControlHandler`. This will cover more access handling. 
 ## Fixed
 - Fix node & node type form alters not being executed
 
