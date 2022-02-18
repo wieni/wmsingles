@@ -25,6 +25,7 @@ chmod +x ./public/modules/contrib/wmsingles/scripts/update-to-v3.sh
 If you're using macOS, make sure to run this before the script:
 ```bash
 brew install gnu-sed
+PATH="$(brew --prefix gnu-sed)/libexec/gnubin:$PATH"
 ```
 
 3. Apply any changes:
