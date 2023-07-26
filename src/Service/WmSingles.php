@@ -45,6 +45,7 @@ class WmSingles implements WmSinglesInterface
         $storage = $this->entityTypeManager->getStorage('node');
         $nodes = $storage->getQuery()
             ->condition('type', $type->id())
+            ->accessCheck(false)
             ->execute();
 
         // There are multiple nodes, this shouldn't happen
